@@ -5,7 +5,7 @@ namespace App\Components;
 /**
  * @method $this setSrc($value)
  */
-class Image extends Component {
+class Image extends \Genius257\View\Component {
     protected $properties = [
         'src' => null,
     ];

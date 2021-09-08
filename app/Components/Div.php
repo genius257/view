@@ -2,7 +2,7 @@
 
 namespace App\Components;
 
-class Div extends Component {
+class Div extends \Genius257\View\Component {
 
     public function _render() {
         ?>
