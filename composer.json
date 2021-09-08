@@ -1,12 +1,23 @@
 {
-    "name": "root/www",
+    "name": "genius257/view",
+    "description": "Inspired by the JSX format, this solution allows you to define components and render the resulting HTML.",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/genius257/view/issues",
+        "source": "https://github.com/genius257/view"
+    },
+    "authors": [
+        {
+            "name": "Anders Pedersen",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "nesbot/carbon": "^2.53",
-        "paquettg/php-html-parser": "^3.1"
+        "paquettg/php-html-parser": "3.1"
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
             "Genius257\\View\\": "merchant/genius257/view/src"
         }
     }
