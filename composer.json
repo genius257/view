@@ -20,5 +20,8 @@
         "psr-4": {
             "Genius257\\View\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": { "App\\": "example/app/" }
     }
 }
