@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__.'/vendor/autoload.php');
+require_once(__DIR__.'/../../vendor/autoload.php');
 
 header("Content-Type: text/plain");
 
@@ -46,7 +46,7 @@ var_dump($dom->root->getChildren()[0]->getChildren()[1]->tag);
 //$xml = new SimpleXMLElement($a, LIBXML_NOWARNING | LIBXML_NOERROR);
 */
 
-$view = new \App\View('test');
+$view = new \Genius257\View\View(__DIR__.'/../app/View/test');
 
 ?>
 <html>
