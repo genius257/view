@@ -2,3 +2,4 @@
 /vendor
 .env
 database.sqlite
+composer.lock
