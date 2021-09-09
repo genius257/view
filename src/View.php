@@ -92,7 +92,7 @@ class View {
     }
 
     public function forceRender() {
-        $this->$viewCache = null;
+        $this->viewCache = null;
         return $this->render();
     }
 
