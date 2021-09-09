@@ -12,26 +12,61 @@ abstract class Component {
      */
     protected $trim = true;
 
+    /**
+     * The supported attributes on the component.
+     * 
+     * all keys in this list will have a setter method available
+     * named set followed by the property name with first letter uppercase.
+     *
+     * @var array
+     */
     protected $properties = [
         'children' => null,
     ];
 
+    /**
+     * Create a new instance of the component.
+     * 
+     * @return static
+     */
     public static function make() {
         return new static();
     }
 
+    /**
+     * Get the available properties and their values.
+     *
+     * @return array
+     */
     public function getProperties() {
         return $this->properties;
     }
 
+    /**
+     * Get component property value, or null if non existent.
+     *
+     * @return mixed|null
+     */
     public function getProperty(string $property) {
         return $this->getProperties()[$property] ?? null;
     }
 
+    /**
+     * Check if the component supports a property by name.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
     public function hasProperty(string $property) {
         return array_key_exists($property, $this->properties);
     }
 
+    /**
+     * Magic method for property setters support.
+     *
+     * @return $this
+     */
     public function __call(string $method, $value) {
         if (!preg_match('/^set([A-Z].*)$/', $method, $matches)) {
             throw new \Exception("Call to undefined method \"$method\"");
@@ -49,14 +84,23 @@ abstract class Component {
         return $this;
     }
 
+    /**
+     * Renders each child and returns the concatenated strings.
+     *
+     * @return string
+     */
     public function renderChildren() : string {
         return implode('', array_map(function ($child) {
             return strval($child);
         }, $this->properties['children'] ?? []));
     }
 
+    /**
+     * Renders the component and returns the resulting string.
+     */
     public function render() : string {
         ob_start();
+        //TODO: support the _render also being able to return value, but throw warning if neither ob_get_contents or the return value are empty!
         $this->_render();
         $result = ob_get_contents();
         ob_end_clean();
@@ -68,7 +112,7 @@ abstract class Component {
 
     /**
      * Render component content.
-     * @return Stringable
+     * @return Stringable|void
      */
     abstract protected function _render();
 
