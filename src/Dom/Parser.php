@@ -6,6 +6,7 @@ use PHPHtmlParser\Dom\Parser as PHPHtmlParserParser;
 
 use PHPHtmlParser\Content;
 use PHPHtmlParser\Contracts\Dom\ParserInterface;
+use PHPHtmlParser\Dom\Tag;
 use PHPHtmlParser\Dom\Node\AbstractNode;
 use PHPHtmlParser\Dom\Node\HtmlNode;
 use PHPHtmlParser\Dom\Node\TextNode;
