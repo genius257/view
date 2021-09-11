@@ -76,9 +76,12 @@ class View {
             $class->$setter($attributeValue);
         }
 
-        if (count($node->getChildren()) > 0 && $class->hasProperty('children')) {
-            //TODO: should we throw warning if children are defined, but no children supported on the class?
-            $class->setChildren($node->getChildren());
+        if (count($node->getChildren()) > 0) {
+            if ($class->hasProperty('children')) {
+                $class->setChildren($node->getChildren());
+            } else {
+                trigger_error("children are passed to $className but are not supported by the component", E_USER_WARNING);//TODO: verbose level
+            }
         }
 
         $html = strval($class);
