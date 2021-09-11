@@ -23,6 +23,7 @@ class View {
     public function parse(string $html) : Dom {
         $dom = new Dom(new Parser());
 
+        //TODO: add support for user provided options.
         $options = new Options();
         $options->setCleanupInput(false);
 
