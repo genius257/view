@@ -101,9 +101,18 @@ abstract class Component {
     public function render() : string {
         ob_start();
         //TODO: support the _render also being able to return value, but throw warning if neither ob_get_contents or the return value are empty!
-        $this->_render();
+        $return = $this->_render();
         $result = ob_get_contents();
         ob_end_clean();
+        if ($return !== null) {
+            if ($result !== "" && $result !== false) {
+                $className = get_class($this);
+                trigger_error("component $className::_render produced content to the output buffer AND returned a non null value", E_USER_WARNING);
+                $result.= $return;
+            } else {
+                $result = $return;
+            }
+        }
         if ($this->trim) {
             $result = trim($result);
         }
