@@ -8,7 +8,8 @@ use PHPHtmlParser\Content;
 use PHPHtmlParser\Contracts\Dom\ParserInterface;
 use PHPHtmlParser\Dom\Tag;
 use PHPHtmlParser\Dom\Node\AbstractNode;
-use PHPHtmlParser\Dom\Node\HtmlNode;
+//use PHPHtmlParser\Dom\Node\HtmlNode;
+use Genius257\View\Dom\Node\HtmlNode;
 use PHPHtmlParser\Dom\Node\TextNode;
 use PHPHtmlParser\DTO\TagDTO;
 use PHPHtmlParser\Enum\StringToken;
@@ -114,6 +115,7 @@ class Parser extends PHPHtmlParserParser
         if ($content->char() == '/') {
             return $this->makeEndTag($content, $options);
         }
+        $rawTag = null;
         if ($content->char() == '?') {
             // special setting tag
             $tag = $content->fastForward(1)
@@ -131,13 +133,15 @@ class Parser extends PHPHtmlParserParser
                 ->setClosing('-->')
                 ->selfClosing();
         } else {
-            $tag = $content->copyByToken(StringToken::SLASH(), true);
+            $tag = ($content->copyByToken(StringToken::SLASH(), true));
+            $rawTag = $tag;
+            $tag = \strtolower($tag);
             if (\trim($tag) == '') {
                 // no tag found, invalid < found
                 return TagDTO::makeFromPrimitives();
             }
         }
-        $node = new HtmlNode($tag);
+        $node = new HtmlNode($tag, $rawTag);
         $node->setHtmlSpecialCharsDecode($options->isHtmlSpecialCharsDecode());
         $this->setUpAttributes($content, $size, $node, $options, $tag);
 

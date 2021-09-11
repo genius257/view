@@ -3,7 +3,8 @@
 namespace Genius257\View;
 
 use PHPHtmlParser\Dom;
-use PHPHtmlParser\Dom\Node\HtmlNode;
+//use PHPHtmlParser\Dom\Node\HtmlNode;
+use Genius257\View\Dom\Node\HtmlNode;
 use PHPHtmlParser\Options;
 use Genius257\View\Dom\Parser;
 
@@ -60,7 +61,7 @@ class View {
             }
         }
 
-        $className = $node->tag->name();
+        $className = $node->rawTag();
 
         if (!class_exists($className)) {
             return $node;
