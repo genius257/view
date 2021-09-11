@@ -32,8 +32,6 @@ class View {
         );
 
         $dom->loadStr($html);
-        //var_dump($dom->root->getChildren()[0]->tag->name());
-        //var_dump($dom->root->getChildren()[0]->getChildren()[1]->tag);
         foreach($dom->getChildren() as $child) {
             $newChild = $this->processNode($child);
             if ($newChild !== $child) {
@@ -68,8 +66,6 @@ class View {
         }
 
         $class = new $className();
-
-        //FIXME: 
 
         foreach ($node->getAttributes() as $attributeKey => $attributeValue) {
             $setter = "set".ucfirst($attributeKey);
