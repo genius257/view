@@ -74,7 +74,7 @@ class View {
         }
 
         if (count($node->getChildren()) > 0) {
-            if ($class->hasProperty('children')) {
+            if ($class->hasProperty('children') || method_exists($class, 'setChildren')) {
                 $class->setChildren($node->getChildren());
             } else {
                 trigger_error("children are passed to $className but are not supported by the component", E_USER_WARNING);//TODO: verbose level
