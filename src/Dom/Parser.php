@@ -10,6 +10,7 @@ use PHPHtmlParser\Dom\Tag;
 use PHPHtmlParser\Dom\Node\AbstractNode;
 //use PHPHtmlParser\Dom\Node\HtmlNode;
 use Genius257\View\Dom\Node\HtmlNode;
+use Genius257\View\Dom\Node\RootNode;
 use PHPHtmlParser\Dom\Node\TextNode;
 use PHPHtmlParser\DTO\TagDTO;
 use PHPHtmlParser\Enum\StringToken;
@@ -35,7 +36,7 @@ class Parser extends PHPHtmlParserParser
     public function parse(Options $options, Content $content, int $size): AbstractNode
     {
         // add the root node
-        $root = new HtmlNode('root');
+        $root = new RootNode('root');
         $root->setHtmlSpecialCharsDecode($options->isHtmlSpecialCharsDecode());
         $activeNode = $root;
         while ($activeNode !== null) {
