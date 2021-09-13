@@ -140,6 +140,10 @@ class Parser extends PHPHtmlParserParser
             if (\trim($tag) == '') {
                 // no tag found, invalid < found
                 return TagDTO::makeFromPrimitives();
+            } elseif ($tag === '!doctype') {
+                $tag = (new Tag($rawTag))
+                    ->noTrailingSlash()
+                    ->selfClosing();
             }
         }
         $node = new HtmlNode($tag, $rawTag);
