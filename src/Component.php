@@ -2,6 +2,9 @@
 
 namespace Genius257\View;
 
+use PHPHtmlParser\Dom\Node\HtmlNode;
+use Genius257\View\Dom\Node\RootNode;
+
 /**
  * @method $this setChildren(array $value)
  */
@@ -82,6 +85,32 @@ abstract class Component {
         $this->properties[$property] = $value[0] ?? null;
 
         return $this;
+    }
+
+    /**
+     * Get *REAL* HTMLNode children.
+     * 
+     * *REAL*, meaning that child components would produce a root HTMLNode,
+     * making changes to the child data appear as not working in some cases.
+     *
+     * @return HtmlNode[]
+     */
+    public function getHTMLNodeChildren() {
+        $HTMLNodes = [];
+        $children = $this->properties['children'] ?? [];
+        foreach ($children as $child) {
+            if ($child instanceof RootNode) {
+                foreach ($child->getChildren() as $child) {
+                    if ($child instanceof HtmlNode) {
+                        $HTMLNodes[] = $child;
+                    }
+                }
+            } elseif ($child instanceof HtmlNode) {
+                $HTMLNodes[] = $child;
+            }
+        }
+
+        return $HTMLNodes;
     }
 
     /**
