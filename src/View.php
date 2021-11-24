@@ -17,7 +17,7 @@ class View {
 
     public function __construct(string $view) {
         $this->view = $view;
-        $this->viewContent = $this->requireToVar($this->view.'.php');
+        $this->viewContent = $this->requireToVar(stream_resolve_include_path($this->view) ? $this->view : $this->view.'.php');
     }
 
     public function parse(string $html) : Dom {
