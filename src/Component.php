@@ -9,6 +9,35 @@ use Genius257\View\Dom\Node\RootNode;
  * @method $this setChildren(array $value)
  */
 abstract class Component {
+    private static $initialPropertiesCache = [];
+
+    /**
+     * Returns a merged array of properties defined on the parent class hierarchy.
+     *
+     * @return array parent classes properties merged.
+     */
+    private static function processInitialProperties() {
+        $properties = [];
+
+        $reflectionClass = new \ReflectionClass(static::class);
+        while (is_subclass_of($reflectionClass->name, self::class) && $parent = $reflectionClass->getParentClass()) {
+            $reflectionProperty = $parent->getProperty('properties');
+            $reflectionProperty->setAccessible(true);
+            $properties += $reflectionProperty->getValue($parent->newInstanceWithoutConstructor());
+            $reflectionClass = $parent;
+        }
+
+        return self::$initialPropertiesCache[static::class] = $properties;
+    }
+
+    private static function getInitialProperties() {
+        if (isset(self::$initialPropertiesCache[static::class])) {
+            return self::$initialPropertiesCache[static::class];
+        }
+
+        return static::processInitialProperties();
+    }
+
     /**
      * If true, the render output will be stripped of whitespace chars from the beginning and end of a string.
      * @var bool
@@ -26,6 +55,11 @@ abstract class Component {
     protected $properties = [
         'children' => null,
     ];
+
+    /** Creates a new View Component class instace */
+    public function __construct() {
+        $this->properties += self::getInitialProperties();
+    }
 
     /**
      * Create a new instance of the component.
