@@ -9,6 +9,11 @@ use Genius257\View\Dom\Node\RootNode;
  * @method $this setChildren(array $value)
  */
 abstract class Component {
+    /**
+     * Cache for getInitialProperties.
+     *
+     * A map of resolved initial class properties.
+     */
     private static $initialPropertiesCache = [];
 
     /**
