@@ -26,6 +26,8 @@ class View {
         //TODO: add support for user provided options.
         $options = new Options();
         $options->setCleanupInput(false);
+        $options->setRemoveDoubleSpace(false);
+        $options->setPreserveLineBreaks(true);
 
         $dom->setOptions(
             // this is set as the global option level.
