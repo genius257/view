@@ -8,16 +8,21 @@ use Genius257\View\Dom\Node\HtmlNode;
 use PHPHtmlParser\Options;
 use Genius257\View\Dom\Parser;
 
-//TODO: handle exceptions, to show better trace (HTML position) if it fails.
-
 class View {
+    /**
+     * View file path
+     *
+     * @var string
+     */
     protected $view;
+    protected $resolvedView;
     protected $viewContent;
     protected $viewCache;
 
     public function __construct(string $view) {
         $this->view = $view;
-        $this->viewContent = $this->requireToVar(stream_resolve_include_path($this->view) ? $this->view : $this->view.'.php');
+        $this->resolvedView = stream_resolve_include_path($this->view) ? $this->view : $this->view.'.php';
+        $this->viewContent = $this->requireToVar($this->resolvedView);
     }
 
     public function parse(string $html) : Dom {
@@ -52,21 +57,27 @@ class View {
         if (!($node instanceof HtmlNode)) {
             return $node;
         }
-        foreach($node->getChildren() as $child) {
-            $newChild = $this->processNode($child);
-            if ($newChild !== $child) {
-                $node->replaceChild(
-                    $child->id(),
-                    $newChild
-                );
+        try {
+            foreach($node->getChildren() as $child) {
+                $newChild = $this->processNode($child);
+                if ($newChild !== $child) {
+                    $node->replaceChild(
+                        $child->id(),
+                        $newChild
+                    );
+                }
             }
-        }
 
-        $className = $node->rawTag();
+            $className = $node->rawTag();
 
-        if (!class_exists($className)) {
-            return $node;
-        }
+            try {
+                if (!class_exists($className)) {
+                    return $node;
+                }
+            } catch (\Throwable $throwable) {
+                $exception = new ProcessNodeException($throwable, realpath($this->resolvedView), $className ?? $node->tag->name(), is_null($node ?? null) ? null : $node->getLocation());
+                throw $exception;
+            }
 
         $class = new $className();
 
@@ -85,7 +96,18 @@ class View {
 
         $html = strval($class);
 
-        $node = $this->parse($html);
+        try {
+            $resolvedView = $this->resolvedView;
+            $rc = new \ReflectionClass($class);
+            $this->resolvedView = $rc->getFileName();
+            $node = $this->parse($html);
+        } finally {
+            $this->resolvedView = $resolvedView;
+        }
+    } catch (\Throwable $throwable) {
+        $exception = new ProcessNodeException($throwable, realpath($this->resolvedView), $className ?? $node->tag->name(), is_null($node ?? null) ? null : $node->getLocation());
+        throw $exception;
+    }
 
         return $node->root;
     }

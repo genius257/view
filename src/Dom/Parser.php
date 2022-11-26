@@ -8,7 +8,6 @@ use PHPHtmlParser\Content;
 use PHPHtmlParser\Contracts\Dom\ParserInterface;
 use PHPHtmlParser\Dom\Tag;
 use PHPHtmlParser\Dom\Node\AbstractNode;
-//use PHPHtmlParser\Dom\Node\HtmlNode;
 use Genius257\View\Dom\Node\HtmlNode;
 use Genius257\View\Dom\Node\RootNode;
 use PHPHtmlParser\Dom\Node\TextNode;
@@ -24,6 +23,26 @@ use stringEncode\Encode;
 
 class Parser extends PHPHtmlParserParser
 {
+    public function getLocation(Content $content)
+    {
+        $position = $content->getPosition();
+
+        $reflectionClass = new \ReflectionClass($content);
+        $reflectionProperty = $reflectionClass->getProperty('content');
+        $reflectionProperty->setAccessible(true);
+
+        /**
+         * @var string
+         */
+        $stringContent = $reflectionProperty->getValue($content);
+
+        if (preg_match_all('/\n/', substr($stringContent, 0, $position), $matches, PREG_OFFSET_CAPTURE) === false) {
+            throw new \Exception("Unexpected regular expression failure");
+        }
+
+        return new Location(count($matches[0]) + 1, end($matches[0])[1] ?? 0, $position);
+    }
+
     /**
      * Attempts to parse the html in content.
      *
@@ -134,6 +153,7 @@ class Parser extends PHPHtmlParserParser
                 ->setClosing('-->')
                 ->selfClosing();
         } else {
+            $location = $this->getLocation($content);
             $tag = ($content->copyByToken(StringToken::SLASH(), true));
             $rawTag = $tag;
             $tag = \strtolower($tag);
@@ -146,7 +166,7 @@ class Parser extends PHPHtmlParserParser
                     ->selfClosing();
             }
         }
-        $node = new HtmlNode($tag, $rawTag);
+        $node = new HtmlNode($tag, $rawTag, $location);
         $node->setHtmlSpecialCharsDecode($options->isHtmlSpecialCharsDecode());
         $this->setUpAttributes($content, $size, $node, $options, $tag);
 
