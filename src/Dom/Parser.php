@@ -106,7 +106,7 @@ class Parser extends PHPHtmlParserParser
                     continue;
                 }
 
-                /** @var AbstractNode $node */
+                /** @var \PHPHtmlParser\Dom\Node\HtmlNode|null $node */
                 $node = $tagDTO->getNode();
                 $activeNode->addChild($node);
 
