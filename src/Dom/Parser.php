@@ -182,7 +182,7 @@ class Parser extends PHPHtmlParserParser
                     ->selfClosing();
             }
         }
-        $node = new HtmlNode($tag, $rawTag, $location);
+        $node = new HtmlNode($tag, $rawTag, $location ?? null);
         $node->setHtmlSpecialCharsDecode($options->isHtmlSpecialCharsDecode());
         $this->setUpAttributes($content, $size, $node, $options, $tag);
 
