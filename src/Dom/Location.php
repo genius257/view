@@ -28,16 +28,25 @@ class Location {
         $this->offset = $offset;
     }
 
+    /**
+     * @return int
+     */
     public function getLine()
     {
         return $this->line;
     }
 
+    /**
+     * @return int
+     */
     public function getColumn()
     {
         return $this->column;
     }
 
+    /**
+     * @return int
+     */
     public function getOffset()
     {
         return $this->offset;

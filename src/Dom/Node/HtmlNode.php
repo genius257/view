@@ -33,6 +33,11 @@ class HtmlNode extends PHPHtmlParserHtmlNode {
         parent::__construct($tag);
     }
 
+    /**
+     * Get the unmodified tag string.
+     *
+     * @return string
+     */
     public function rawTag() {
         return $this->rawTag;
     }

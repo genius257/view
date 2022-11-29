@@ -23,6 +23,15 @@ use stringEncode\Encode;
 
 class Parser extends PHPHtmlParserParser
 {
+    /**
+     * Get current parser cursor location.
+     *
+     * @param Content $content
+     *
+     * @return Location
+     *
+     * @throws \Exception If an unexpected issue with a regular expression occurs.
+     */
     public function getLocation(Content $content)
     {
         $position = $content->getPosition();
@@ -118,6 +127,13 @@ class Parser extends PHPHtmlParserParser
         return $root;
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @param Options $options
+     * @param Content $content
+     * @param int $size The max string length of the content
+     */
     private function parseTag(Options $options, Content $content, int $size): TagDTO
     {
         if ($content->char() != '<') {
@@ -198,6 +214,19 @@ class Parser extends PHPHtmlParserParser
         return TagDTO::makeFromPrimitives(true, false, $node);
     }
 
+    /**
+     * Set available attributes from current tag via content, to the node instance.
+     *
+     * @inheritdoc
+     *
+     * @param Content $content
+     * @param int $size
+     * @param HtmlNode $node
+     * @param Options $options
+     * @param string|Tag $tag
+     *
+     * @return void
+     */
     private function setUpAttributes(Content $content, int $size, HtmlNode $node, Options $options, $tag): void
     {
         while (

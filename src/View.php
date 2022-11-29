@@ -15,16 +15,46 @@ class View {
      * @var string
      */
     protected $view;
+
+    /**
+     * Resolved view file path.
+     *
+     * @var string;
+     */
     protected $resolvedView;
+
+    /**
+     * View file content.
+     *
+     * @var string
+     */
     protected $viewContent;
+
+    /**
+     * Render method output cache.
+     *
+     * @var string|null
+     */
     protected $viewCache;
 
+    /**
+     * Initialize a new View class instance.
+     *
+     * @param string $view view file path
+     */
     public function __construct(string $view) {
         $this->view = $view;
         $this->resolvedView = stream_resolve_include_path($this->view) ? $this->view : $this->view.'.php';
         $this->viewContent = $this->requireToVar($this->resolvedView);
     }
 
+    /**
+     * Parse view html content.
+     *
+     * @param string $html view html content
+     *
+     * @return Dom
+     */
     public function parse(string $html) : Dom {
         $dom = new Dom(new Parser());
 
@@ -53,6 +83,13 @@ class View {
         return $dom;
     }
 
+    /**
+     * Process DOM node.
+     *
+     * @param mixed $node
+     *
+     * @return \PHPHtmlParser\Dom\Node\HtmlNode|HtmlNode
+     */
     protected function processNode($node) {
         if (!($node instanceof HtmlNode)) {
             return $node;
@@ -112,15 +149,32 @@ class View {
         return $node->root;
     }
 
+    /**
+     * Get processed view content as a string.
+     *
+     * @return string
+     */
     public function render() {
         return $this->viewCache = $this->viewCache ?? $this->parse($this->viewContent)->outerHtml;
     }
 
+    /**
+     * Reset cache and get processed view content as a string.
+     *
+     * @return string
+     */
     public function forceRender() {
         $this->viewCache = null;
         return $this->render();
     }
 
+    /**
+     * Get the output from a php evaluated file.
+     *
+     * @param string $file file path
+     *
+     * @return string
+     */
     public function requireToVar($file) {
         ob_start();
         require($file);

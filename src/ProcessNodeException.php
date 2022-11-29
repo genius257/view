@@ -15,6 +15,14 @@ class ProcessNodeException extends Exception {
     /** @var Throwable */
     protected $originalThrowable;
 
+    /**
+     * Initialize a new ProcessNodeException class.
+     *
+     * @param Throwable     $previous  previous throwable
+     * @param string        $viewFile  view file path
+     * @param string        $className view component class name
+     * @param Location|null $location  view content throwable source location
+     */
     public function __construct(Throwable $previous, string $viewFile, string $className, ?Location $location) {
         parent::__construct($previous->getMessage(), $previous->getCode());
         
@@ -37,6 +45,15 @@ class ProcessNodeException extends Exception {
         $rp->setValue($this, $trace);
     }
 
+    /**
+     * Extract ReflectionClass of Throwable parent class from provided Throwable class inheritance hierarchy.
+     *
+     * @param Throwable $throwable
+     *
+     * @return ReflectionClass<Throwable>
+     *
+     * @throws Exception
+     */
     protected function extractThrowableReflection(Throwable $throwable): ReflectionClass
     {
         $ro = new \ReflectionObject($throwable);
@@ -52,12 +69,20 @@ class ProcessNodeException extends Exception {
         return $ro;
     }
 
+    /**
+     * Extract trace array from Throwable.
+     *
+     * @param Throwable $throwable
+     *
+     * @return array<array{file: string, line: int, class?: string, function: string, type?: string}>
+     */
     protected function extractTrace(Throwable $throwable)
     {
         $ro = $this->extractThrowableReflection($throwable);
         $rp = $ro->getProperty('trace');
         $rp->setAccessible(true);
 
+        /** @var array<array{file: string, line: int, class?: string, function: string, type?: string}> */
         return $rp->getValue($throwable);
     }
 }
