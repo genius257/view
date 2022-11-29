@@ -17,6 +17,7 @@ jobs:
         uses: php-actions/phpunit@v3
         with:
           configuration: phpunit.xml
+          version: "8.5"
           php_version: "7.2"
           php_extensions: "xdebug mbstring"
           args: --coverage-clover phpunit-clover.xml
