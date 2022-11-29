@@ -178,6 +178,6 @@ class View {
     public function requireToVar($file) {
         ob_start();
         require($file);
-        return ob_get_clean();
+        return (string) ob_get_clean();
     }
 }
