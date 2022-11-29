@@ -10,7 +10,7 @@ use Genius257\View\Dom\Parser;
 
 class View {
     /**
-     * View file path
+     * View file path.
      *
      * @var string
      */
