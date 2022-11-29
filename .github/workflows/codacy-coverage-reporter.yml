@@ -1,0 +1,29 @@
+name: Codacy Coverage Reporter
+
+on: ["push"]
+
+jobs:
+  codacy-coverage-reporter:
+    runs-on: ubuntu-latest
+    name: Codacy Coverage Reporter
+    steps:
+      - uses: actions/checkout@v2
+      - name: Composer (php-actions)
+        uses: php-actions/composer@v6
+        with:
+          php_version: "7.2"
+          version: 2.x
+      - name: PHPUnit (php-actions)
+        uses: php-actions/phpunit@v3
+        with:
+          configuration: phpunit.xml
+          php_version: "7.2"
+          php_extensions: "xdebug mbstring"
+          args: --coverage-clover phpunit-clover.xml
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          # or
+          # api-token: ${{ secrets.CODACY_API_TOKEN }}
+          coverage-reports: phpunit-clover.xml
