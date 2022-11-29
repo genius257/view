@@ -3,3 +3,4 @@
 .env
 database.sqlite
 composer.lock
+.phpunit.result.cache
