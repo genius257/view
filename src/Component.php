@@ -28,7 +28,7 @@ abstract class Component {
         while (is_subclass_of($reflectionClass->name, self::class) && $parent = $reflectionClass->getParentClass()) {
             $reflectionProperty = $parent->getProperty('properties');
             $reflectionProperty->setAccessible(true);
-            $properties += $reflectionProperty->getValue($parent->newInstanceWithoutConstructor());
+            $properties += $reflectionProperty->getDefaultValue();
             $reflectionClass = $parent;
         }
 
