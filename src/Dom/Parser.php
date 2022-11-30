@@ -56,9 +56,7 @@ class Parser extends PHPHtmlParserParser
         $root->setHtmlSpecialCharsDecode($options->isHtmlSpecialCharsDecode());
         $activeNode = $root;
         while ($activeNode !== null) {
-            if ($activeNode && $activeNode->tag->name() === 'script'
-                && $options->isCleanupInput() !== true
-            ) {
+            if ($activeNode->tag->name() === 'script' && !$options->isCleanupInput()) {
                 $str = $content->copyUntil('</');
             } else {
                 $str = $content->copyUntil('<');
