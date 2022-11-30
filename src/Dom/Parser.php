@@ -3,9 +3,7 @@
 namespace Genius257\View\Dom;
 
 use PHPHtmlParser\Dom\Parser as PHPHtmlParserParser;
-
 use PHPHtmlParser\Content;
-use PHPHtmlParser\Contracts\Dom\ParserInterface;
 use PHPHtmlParser\Dom\Tag;
 use PHPHtmlParser\Dom\Node\AbstractNode;
 use Genius257\View\Dom\Node\HtmlNode;
@@ -13,13 +11,9 @@ use Genius257\View\Dom\Node\RootNode;
 use PHPHtmlParser\Dom\Node\TextNode;
 use PHPHtmlParser\DTO\TagDTO;
 use PHPHtmlParser\Enum\StringToken;
-use PHPHtmlParser\Exceptions\ChildNotFoundException;
-use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\ContentLengthException;
-use PHPHtmlParser\Exceptions\LogicalException;
 use PHPHtmlParser\Exceptions\StrictException;
 use PHPHtmlParser\Options;
-use stringEncode\Encode;
 
 class Parser extends PHPHtmlParserParser
 {
@@ -53,13 +47,7 @@ class Parser extends PHPHtmlParserParser
     }
 
     /**
-     * Attempts to parse the html in content.
-     *
-     * @throws ChildNotFoundException
-     * @throws CircularException
-     * @throws ContentLengthException
-     * @throws LogicalException
-     * @throws StrictException
+     * @inheritdoc
      */
     public function parse(Options $options, Content $content, int $size): AbstractNode
     {
