@@ -189,7 +189,7 @@ abstract class Component {
 
     /**
      * Render component content.
-     * @return Stringable|void
+     * @return \Stringable|string|void
      */
     abstract protected function _render();
 

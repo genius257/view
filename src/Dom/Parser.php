@@ -3,35 +3,51 @@
 namespace Genius257\View\Dom;
 
 use PHPHtmlParser\Dom\Parser as PHPHtmlParserParser;
-
 use PHPHtmlParser\Content;
-use PHPHtmlParser\Contracts\Dom\ParserInterface;
 use PHPHtmlParser\Dom\Tag;
 use PHPHtmlParser\Dom\Node\AbstractNode;
-//use PHPHtmlParser\Dom\Node\HtmlNode;
 use Genius257\View\Dom\Node\HtmlNode;
 use Genius257\View\Dom\Node\RootNode;
 use PHPHtmlParser\Dom\Node\TextNode;
 use PHPHtmlParser\DTO\TagDTO;
 use PHPHtmlParser\Enum\StringToken;
-use PHPHtmlParser\Exceptions\ChildNotFoundException;
-use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\ContentLengthException;
-use PHPHtmlParser\Exceptions\LogicalException;
 use PHPHtmlParser\Exceptions\StrictException;
 use PHPHtmlParser\Options;
-use stringEncode\Encode;
 
 class Parser extends PHPHtmlParserParser
 {
     /**
-     * Attempts to parse the html in content.
+     * Get current parser cursor location.
      *
-     * @throws ChildNotFoundException
-     * @throws CircularException
-     * @throws ContentLengthException
-     * @throws LogicalException
-     * @throws StrictException
+     * @param Content $content
+     *
+     * @return Location
+     *
+     * @throws \Exception If an unexpected issue with a regular expression occurs.
+     */
+    public function getLocation(Content $content)
+    {
+        $position = $content->getPosition();
+
+        $reflectionClass = new \ReflectionClass($content);
+        $reflectionProperty = $reflectionClass->getProperty('content');
+        $reflectionProperty->setAccessible(true);
+
+        /**
+         * @var string
+         */
+        $stringContent = $reflectionProperty->getValue($content);
+
+        if (preg_match_all('/\n/', substr($stringContent, 0, $position), $matches, PREG_OFFSET_CAPTURE) === false) {
+            throw new \Exception("Unexpected regular expression failure");
+        }
+
+        return new Location(count($matches[0]) + 1, end($matches[0])[1] ?? 0, $position);
+    }
+
+    /**
+     * @inheritdoc
      */
     public function parse(Options $options, Content $content, int $size): AbstractNode
     {
@@ -40,13 +56,11 @@ class Parser extends PHPHtmlParserParser
         $root->setHtmlSpecialCharsDecode($options->isHtmlSpecialCharsDecode());
         $activeNode = $root;
         while ($activeNode !== null) {
-            if ($activeNode && $activeNode->tag->name() === 'script'
-                && $options->isCleanupInput() !== true
-            ) {
-                $str = $content->copyUntil('</');
-            } else {
-                $str = $content->copyUntil('<');
-            }
+            $isScript = $activeNode->tag->name() === 'script';
+            $isDirty = !$options->isCleanupInput();
+
+            $str = $content->copyUntil(($isScript && $isDirty) ? '</' : '<');
+
             if ($str == '') {
                 $tagDTO = $this->parseTag($options, $content, $size);
                 if (!$tagDTO->isStatus()) {
@@ -78,7 +92,7 @@ class Parser extends PHPHtmlParserParser
                     continue;
                 }
 
-                /** @var AbstractNode $node */
+                /** @var \PHPHtmlParser\Dom\Node\HtmlNode|null $node */
                 $node = $tagDTO->getNode();
                 $activeNode->addChild($node);
 
@@ -99,6 +113,13 @@ class Parser extends PHPHtmlParserParser
         return $root;
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @param Options $options
+     * @param Content $content
+     * @param int $size The max string length of the content
+     */
     private function parseTag(Options $options, Content $content, int $size): TagDTO
     {
         if ($content->char() != '<') {
@@ -134,6 +155,7 @@ class Parser extends PHPHtmlParserParser
                 ->setClosing('-->')
                 ->selfClosing();
         } else {
+            $location = $this->getLocation($content);
             $tag = ($content->copyByToken(StringToken::SLASH(), true));
             $rawTag = $tag;
             $tag = \strtolower($tag);
@@ -146,7 +168,7 @@ class Parser extends PHPHtmlParserParser
                     ->selfClosing();
             }
         }
-        $node = new HtmlNode($tag, $rawTag);
+        $node = new HtmlNode($tag, $rawTag, $location ?? null);
         $node->setHtmlSpecialCharsDecode($options->isHtmlSpecialCharsDecode());
         $this->setUpAttributes($content, $size, $node, $options, $tag);
 
@@ -178,6 +200,19 @@ class Parser extends PHPHtmlParserParser
         return TagDTO::makeFromPrimitives(true, false, $node);
     }
 
+    /**
+     * Set available attributes from current tag via content, to the node instance.
+     *
+     * @inheritdoc
+     *
+     * @param Content $content
+     * @param int $size
+     * @param HtmlNode $node
+     * @param Options $options
+     * @param string|Tag $tag
+     *
+     * @return void
+     */
     private function setUpAttributes(Content $content, int $size, HtmlNode $node, Options $options, $tag): void
     {
         while (
