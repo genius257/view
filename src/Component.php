@@ -14,7 +14,7 @@ abstract class Component {
      *
      * A map of resolved initial class properties.
      */
-    private static $initialPropertiesCache = [];
+    private static $propertiesCache = [];
 
     /**
      * Returns a merged array of properties defined on the parent class hierarchy.
@@ -32,12 +32,12 @@ abstract class Component {
             $reflectionClass = $parent;
         }
 
-        return self::$initialPropertiesCache[static::class] = $properties;
+        return self::$propertiesCache[static::class] = $properties;
     }
 
     private static function getInitialProperties() {
-        if (isset(self::$initialPropertiesCache[static::class])) {
-            return self::$initialPropertiesCache[static::class];
+        if (isset(self::$propertiesCache[static::class])) {
+            return self::$propertiesCache[static::class];
         }
 
         return static::processInitialProperties();
