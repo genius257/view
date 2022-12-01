@@ -19,8 +19,8 @@ All components have a reserved property key named `"children"`. It contains an a
 The component render output is given via the `_render` method.
 
 The method can return one of:
-* a string
-* Nothing but write directly to PHP output, for example via the echo function.
+  * a string
+  * Nothing but write directly to PHP output, for example via the echo function.
 
 But NOT both.
 
