@@ -7,6 +7,7 @@ namespace Genius257\View\Dom\Node;
  * This could have been fixed with a property on the AbstractNode class,
  * but that requires too much code, if not done on the original code base.
  */
-class RootNode extends HtmlNode {
-    //
+class RootNode extends HtmlNode
+{
+
 }
