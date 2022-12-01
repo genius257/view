@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use ErrorException;
 use Genius257\View\Component;
 use Genius257\View\Dom\Node\HtmlNode;
 use Genius257\View\Dom\Node\RootNode;
@@ -137,6 +138,17 @@ class ComponentTest extends TestCase {
         $component = $this->createComponentWithChildren();
 
         $this->assertEquals("xyz", $component->render());
+    }
+
+    public function testRenderWarningWithTwoOutputSources() {
+        $this->expectException(ErrorException::class);
+        $this->expectExceptionMessageMatches('/^component .*::_render produced content to the output buffer AND returned a non null value$/');
+
+        $component = new class extends Component {
+            public function _render() {echo "xyz";return "xyz";}
+        };
+
+        $component->render();
     }
 
     public function testMagicSetterMethods() {
