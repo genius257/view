@@ -76,6 +76,6 @@ class ViewTest extends TestCase {
     public function testRequireToVar() {
         $view = $this->createView();
         $data = $view->requireToVar(__DIR__.'/testData/view.php');
-        $this->assertEquals("<!DOCTYPE html>\n<html>\n    <head></head>\n    <body>\n        text <span>content</span>\n        <br />\n        <Tests\\testData\\Component />\n    </body>\n</html>\n", $data);
+        $this->assertEquals("<!DOCTYPE html>\n<html>\n    <head></head>\n    <body>\n        text <span>content</span>\n        <br />\n        <Tests\\testData\\Component data-extra=\"value\" />\n    </body>\n</html>\n", $data);
     }
 }

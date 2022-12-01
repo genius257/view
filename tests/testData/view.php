@@ -4,6 +4,6 @@
     <body>
         text <span>content</span>
         <br />
-        <Tests\testData\Component />
+        <Tests\testData\Component data-extra="value" />
     </body>
 </html>
