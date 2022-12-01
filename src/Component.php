@@ -135,9 +135,8 @@ abstract class Component {
         ob_end_clean();
         if ($return !== null) {
             if ($result !== "" && $result !== false) {
-                $className = get_class($this);
-                trigger_error("component $className::_render produced content to the output buffer AND returned a non null value", E_USER_WARNING);
-                $result.= $return;
+                $className = str_replace("\0", "", get_class($this));
+                throw new \ErrorException("component $className::_render produced content to the output buffer AND returned a non null value", 0, E_WARNING);
             } else {
                 $result = $return;
             }
