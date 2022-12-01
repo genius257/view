@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<ruleset name="Custom Standard">
+ <description>A custom coding standard</description>
+ <file>src/</file>
+ <file>tests/</file>
+
+ <exclude-pattern type="relative">^/tests/*</exclude-pattern>
+ <exclude-pattern type="relative">^/data/*</exclude-pattern>
+
+ <arg value="s"/>
+
+ <rule ref="PSR2">
+   <exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
+ </rule>
+ <rule ref="Squiz">
+   <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing" />
+   <exclude name="Squiz.Commenting.FileComment.Missing" />
+   <exclude name="Squiz.Files.FileExtension.ClassFound" />
+   <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose" />
+   <exclude name="Squiz.Classes.ClassDeclaration.OpenBraceNewLine" />
+   <exclude name="Squiz.WhiteSpace.MemberVarSpacing.FirstIncorrect" />
+   <exclude name="Squiz.NamingConventions.ValidVariableName" />
+ </rule>
+ <rule ref="Squiz.Commenting.FunctionComment.Missing">
+   <exclude-pattern>*/tests/*</exclude-pattern>
+ </rule>
+ <rule ref="Squiz.Commenting.FunctionComment.MissingReturn">
+   <exclude-pattern>*/tests/*</exclude-pattern>
+ </rule>
+ <rule ref="Squiz.WhiteSpace.FunctionSpacing">
+   <properties>
+      <property name="spacing" value="1" />
+      <property name="spacingBeforeFirst" value="0" />
+      <property name="spacingAfterLast" value="0" />
+   </properties>
+</rule>
+<rule ref="Generic.Commenting.Fixme"/>
+
+<!--
+    Array values are specified by using "element" tags
+    with "key" and "value" attributes.
+
+    NOTE: This syntax is is only supported in PHP_CodeSniffer
+    versions 3.3.0 and greater.
+ -->
+ <rule ref="Generic.PHP.ForbiddenFunctions">
+  <properties>
+   <property name="forbiddenFunctions" type="array" extend="true">
+    <element key="delete" value="unset"/>
+    <element key="print" value="echo"/>
+    <element key="create_function" value="null"/>
+    <element key="sizeof" value="count"/>
+   </property>
+  </properties>
+ </rule>
+</ruleset>
