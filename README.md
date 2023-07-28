@@ -1,5 +1,6 @@
 # View
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f3c5e3437a6449a8bd957c851bb89e23)](https://app.codacy.com/gh/genius257/view?utm_source=github.com&utm_medium=referral&utm_content=genius257/view&utm_campaign=Badge_Grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0b5e12ad70a14db193d0732c2eb06d6a)](https://www.codacy.com/gh/genius257/view/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=genius257/view&amp;utm_campaign=Badge_Grade)
 ![Codacy coverage](https://img.shields.io/codacy/coverage/0b5e12ad70a14db193d0732c2eb06d6a)
 
