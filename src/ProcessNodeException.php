@@ -58,7 +58,7 @@ class ProcessNodeException extends Exception
     /**
      * Extract ReflectionClass of Throwable parent class from provided Throwable class inheritance hierarchy.
      *
-     * @param Throwable $throwable
+     * @param Throwable $throwable instanceof throwable to extract actual throwable from
      *
      * @return ReflectionClass<Throwable>
      *
