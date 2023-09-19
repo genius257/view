@@ -68,7 +68,7 @@ class ProcessNodeException extends Exception
     {
         $ro = new \ReflectionObject($throwable);
 
-        while($ro !== false && !in_array($ro->getName(), [Exception::class, Error::class])) {
+        while ($ro !== false && !in_array($ro->getName(), [Exception::class, Error::class])) {
             $ro = $ro->getParentClass();
         }
 
