@@ -27,12 +27,13 @@ class ProcessNodeException extends Exception
     /**
      * Initialize a new ProcessNodeException class.
      *
-     * @param Throwable     $previous  previous throwable
-     * @param string        $viewFile  view file path
-     * @param string        $className view component class name
-     * @param Location|null $location  view content throwable source location
+     * @param Throwable     $previous  Previous throwable.
+     * @param string        $viewFile  View file path.
+     * @param string        $className View component class name.
+     * @param Location|null $location  View content throwable source location.
      */
-    public function __construct(Throwable $previous, string $viewFile, string $className, ?Location $location) {
+    public function __construct(Throwable $previous, string $viewFile, string $className, ?Location $location)
+    {
         parent::__construct($previous->getMessage(), $previous->getCode());
         
         $this->originalThrowable = $previous;
@@ -40,14 +41,14 @@ class ProcessNodeException extends Exception
         $this->viewFile = $viewFile;
 
         $currentTrace = $this->extractTrace($this);
-        $trace = $this->extractTrace($previous);
-        $traceIndex = count($trace) - count($currentTrace);
+        $trace        = $this->extractTrace($previous);
+        $traceIndex   = (count($trace) - count($currentTrace));
 
-        $trace[$traceIndex]['file'] = $this->viewFile;
-        $trace[$traceIndex]['line'] = is_null($location) ? 0 : $location->getLine();
-        $trace[$traceIndex]['class'] = $className;
-        $trace[$traceIndex]['function'] = "render";
-        $trace[$traceIndex]['type'] = "::";
+        $trace[$traceIndex]['file']     = $this->viewFile;
+        $trace[$traceIndex]['line']     = ($location === null) ? 0 : $location->getLine();
+        $trace[$traceIndex]['class']    = $className;
+        $trace[$traceIndex]['function'] = 'render';
+        $trace[$traceIndex]['type']     = '::';
         $ro = $this->extractThrowableReflection($this);
         $rp = $ro->getProperty('trace');
         $rp->setAccessible(true);
