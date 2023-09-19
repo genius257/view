@@ -8,11 +8,20 @@ use Throwable;
 use Exception;
 use ReflectionClass;
 
-class ProcessNodeException extends Exception {
-    /** @var string */
+class ProcessNodeException extends Exception
+{
+    /**
+     * View file path.
+     *
+     * @var string
+     */
     protected $viewFile;
 
-    /** @var Throwable */
+    /**
+     * The Throwable the trace modifications is based on.
+     *
+     * @var Throwable
+     */
     protected $originalThrowable;
 
     /**
