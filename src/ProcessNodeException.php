@@ -62,7 +62,7 @@ class ProcessNodeException extends Exception
      *
      * @return ReflectionClass<Throwable>
      *
-     * @throws Exception
+     * @throws Exception If extraction of throwable fails
      */
     protected function extractThrowableReflection(Throwable $throwable): ReflectionClass
     {
