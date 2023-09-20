@@ -4,6 +4,7 @@ namespace Genius257\View;
 
 use PHPHtmlParser\Dom\Node\HtmlNode;
 use Genius257\View\Dom\Node\RootNode;
+use Stringable;
 
 /**
  * @method $this setChildren(array $value)
@@ -23,9 +24,13 @@ abstract class Component
      * All keys in this list will have a setter method available
      * named set followed by the property name with first letter uppercase.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $properties = ['children' => null];
+
+    final public function __construct()
+    {
+    }
 
     /**
      * Create a new instance of the component.
@@ -40,7 +45,7 @@ abstract class Component
     /**
      * Get the available properties and their values.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getProperties()
     {
@@ -72,9 +77,12 @@ abstract class Component
     /**
      * Magic method for property setters support.
      *
+     * @param string             $method
+     * @param array<int, mixed>  $arguments
+     *
      * @return $this
      */
-    public function __call(string $method, $value)
+    public function __call(string $method, $arguments)
     {
         if (!preg_match('/^set([A-Z].*)$/', $method, $matches)) {
             throw new \Exception("Call to undefined method \"$method\"");
@@ -87,7 +95,7 @@ abstract class Component
             throw new \Exception("Component property \"$property\" is not defined on \"$className\"");
         }
 
-        $this->properties[$property] = $value[0] ?? null;
+        $this->properties[$property] = $arguments[0] ?? null;
 
         return $this;
     }
@@ -139,8 +147,10 @@ abstract class Component
 
     /**
      * Renders the component and returns the resulting string.
+     *
+     * @return string|Stringable
      */
-    public function render(): string
+    public function render()
     {
         ob_start();
         //TODO: support the _render also being able to return value, but throw warning if neither ob_get_contents or the return value are empty!
