@@ -44,9 +44,9 @@ abstract class Component
 
     /**
      * Render component content.
-     * @return \Stringable|string|void
+     * @return Stringable|string|void
      */
-    abstract protected function _render();
+    abstract public function render();
 
     public function __toString(): string
     {
