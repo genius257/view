@@ -2,10 +2,6 @@
 
 namespace Genius257\View;
 
-use PHPHtmlParser\Dom\Node\HtmlNode;
-use Genius257\View\Dom\Node\RootNode;
-use Stringable;
-
 /**
  * @method $this setChildren(array $value)
  */

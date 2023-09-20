@@ -8,7 +8,6 @@ use Genius257\View\Dom\Node\HtmlNode;
 use PHPHtmlParser\Options;
 use Genius257\View\Dom\Parser;
 use Exception;
-use Stringable;
 
 class View
 {

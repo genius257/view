@@ -4,7 +4,6 @@ namespace Genius257\View;
 
 use Genius257\View\Dom\Node\RootNode;
 use PHPHtmlParser\Dom\Node\HtmlNode;
-use Stringable;
 
 abstract class ComponentWithChildren extends Component
 {
