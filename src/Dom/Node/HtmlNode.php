@@ -6,7 +6,8 @@ use Genius257\View\Dom\Location;
 use PHPHtmlParser\Dom\Node\HtmlNode as PHPHtmlParserHtmlNode;
 use PHPHtmlParser\Dom\Tag;
 
-class HtmlNode extends PHPHtmlParserHtmlNode {
+class HtmlNode extends PHPHtmlParserHtmlNode
+{
     /**
      * The raw tag name string
      *
@@ -38,7 +39,8 @@ class HtmlNode extends PHPHtmlParserHtmlNode {
      *
      * @return string
      */
-    public function rawTag() {
+    public function rawTag()
+    {
         return $this->rawTag;
     }
 

@@ -35,7 +35,7 @@ class ProcessNodeException extends Exception
     public function __construct(Throwable $previous, string $viewFile, string $className, ?Location $location)
     {
         parent::__construct($previous->getMessage(), $previous->getCode());
-        
+
         $this->originalThrowable = $previous;
 
         $this->viewFile = $viewFile;

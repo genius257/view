@@ -8,31 +8,32 @@ use Genius257\View\Dom\Node\RootNode;
 /**
  * @method $this setChildren(array $value)
  */
-abstract class Component {
+abstract class Component
+{
     /**
      * If true, the render output will be stripped of whitespace chars from the beginning and end of a string.
-     * @var bool
+     *
+     * @var boolean
      */
     protected $trim = true;
 
     /**
      * The supported attributes on the component.
-     * 
-     * all keys in this list will have a setter method available
+     *
+     * All keys in this list will have a setter method available
      * named set followed by the property name with first letter uppercase.
      *
      * @var array
      */
-    protected $properties = [
-        'children' => null,
-    ];
+    protected $properties = ['children' => null];
 
     /**
      * Create a new instance of the component.
-     * 
+     *
      * @return static
      */
-    public static function make() {
+    public static function make()
+    {
         return new static();
     }
 
@@ -41,7 +42,8 @@ abstract class Component {
      *
      * @return array
      */
-    public function getProperties() {
+    public function getProperties()
+    {
         return $this->properties;
     }
 
@@ -50,7 +52,8 @@ abstract class Component {
      *
      * @return mixed|null
      */
-    public function getProperty(string $property) {
+    public function getProperty(string $property)
+    {
         return $this->getProperties()[$property] ?? null;
     }
 
@@ -59,9 +62,10 @@ abstract class Component {
      *
      * @param string $property
      *
-     * @return bool
+     * @return boolean
      */
-    public function hasProperty(string $property) {
+    public function hasProperty(string $property)
+    {
         return array_key_exists($property, $this->properties);
     }
 
@@ -70,7 +74,8 @@ abstract class Component {
      *
      * @return $this
      */
-    public function __call(string $method, $value) {
+    public function __call(string $method, $value)
+    {
         if (!preg_match('/^set([A-Z].*)$/', $method, $matches)) {
             throw new \Exception("Call to undefined method \"$method\"");
         }
@@ -79,7 +84,7 @@ abstract class Component {
 
         if (!array_key_exists($property, $this->properties)) {
             $className = get_class($this);
-            throw new \Exception ("Component property \"$property\" is not defined on \"$className\"");
+            throw new \Exception("Component property \"$property\" is not defined on \"$className\"");
         }
 
         $this->properties[$property] = $value[0] ?? null;
@@ -89,15 +94,16 @@ abstract class Component {
 
     /**
      * Get *REAL* HTMLNode children.
-     * 
+     *
      * *REAL*, meaning that child components would produce a root HTMLNode,
      * making changes to the child data appear as not working in some cases.
      *
      * @return HtmlNode[]
      */
-    public function getHTMLNodeChildren() {
+    public function getHTMLNodeChildren()
+    {
         $HTMLNodes = [];
-        $children = $this->properties['children'] ?? [];
+        $children  = $this->properties['children'] ?? [];
         foreach ($children as $child) {
             if ($child instanceof RootNode) {
                 foreach ($child->getChildren() as $child) {
@@ -118,16 +124,24 @@ abstract class Component {
      *
      * @return string
      */
-    public function renderChildren() : string {
-        return implode('', array_map(function ($child) {
-            return strval($child);
-        }, $this->properties['children'] ?? []));
+    public function renderChildren(): string
+    {
+        return implode(
+            '',
+            array_map(
+                function ($child) {
+                    return strval($child);
+                },
+                $this->properties['children'] ?? []
+            )
+        );
     }
 
     /**
      * Renders the component and returns the resulting string.
      */
-    public function render() : string {
+    public function render(): string
+    {
         ob_start();
         //TODO: support the _render also being able to return value, but throw warning if neither ob_get_contents or the return value are empty!
         $return = $this->_render();
@@ -153,7 +167,8 @@ abstract class Component {
      */
     abstract protected function _render();
 
-    public function __toString() : string {
+    public function __toString(): string
+    {
         return $this->render();
     }
 }

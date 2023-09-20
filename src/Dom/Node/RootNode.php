@@ -9,5 +9,4 @@ namespace Genius257\View\Dom\Node;
  */
 class RootNode extends HtmlNode
 {
-
 }

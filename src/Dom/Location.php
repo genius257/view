@@ -2,7 +2,8 @@
 
 namespace Genius257\View\Dom;
 
-class Location {
+class Location
+{
     /**
      * Line number (1-based)
      * @var int

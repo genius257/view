@@ -8,7 +8,8 @@ use Genius257\View\Dom\Node\HtmlNode;
 use PHPHtmlParser\Options;
 use Genius257\View\Dom\Parser;
 
-class View {
+class View
+{
     /**
      * View file path.
      *
@@ -42,9 +43,10 @@ class View {
      *
      * @param string $view view file path
      */
-    public function __construct(string $view) {
+    public function __construct(string $view)
+    {
         $this->view = $view;
-        $this->resolvedView = stream_resolve_include_path($this->view) ? $this->view : $this->view.'.php';
+        $this->resolvedView = stream_resolve_include_path($this->view) ? $this->view : $this->view . '.php';
         $this->viewContent = $this->requireToVar($this->resolvedView);
     }
 
@@ -55,7 +57,8 @@ class View {
      *
      * @return Dom
      */
-    public function parse(string $html) : Dom {
+    public function parse(string $html): Dom
+    {
         $dom = new Dom(new Parser());
 
         //TODO: add support for user provided options.
@@ -70,7 +73,7 @@ class View {
         );
 
         $dom->loadStr($html);
-        foreach($dom->getChildren() as $child) {
+        foreach ($dom->getChildren() as $child) {
             $newChild = $this->processNode($child);
             if ($newChild !== $child) {
                 $dom->root->replaceChild(
@@ -90,12 +93,13 @@ class View {
      *
      * @return \PHPHtmlParser\Dom\Node\HtmlNode|HtmlNode
      */
-    protected function processNode($node) {
+    protected function processNode($node)
+    {
         if (!($node instanceof HtmlNode)) {
             return $node;
         }
         try {
-            foreach($node->getChildren() as $child) {
+            foreach ($node->getChildren() as $child) {
                 $newChild = $this->processNode($child);
                 if ($newChild !== $child) {
                     $node->replaceChild(
@@ -116,35 +120,35 @@ class View {
                 throw $exception;
             }
 
-        $class = new $className();
+            $class = new $className();
 
-        foreach ($node->getAttributes() as $attributeKey => $attributeValue) {
-            $setter = "set".ucfirst($attributeKey);
-            $class->$setter($attributeValue);
-        }
-
-        if (count($node->getChildren()) > 0) {
-            if ($class->hasProperty('children') || method_exists($class, 'setChildren')) {
-                $class->setChildren($node->getChildren());
-            } else {
-                trigger_error("children are passed to $className but are not supported by the component", E_USER_WARNING);//TODO: verbose level
+            foreach ($node->getAttributes() as $attributeKey => $attributeValue) {
+                $setter = "set" . ucfirst($attributeKey);
+                $class->$setter($attributeValue);
             }
-        }
 
-        $html = strval($class);
+            if (count($node->getChildren()) > 0) {
+                if ($class->hasProperty('children') || method_exists($class, 'setChildren')) {
+                    $class->setChildren($node->getChildren());
+                } else {
+                    trigger_error("children are passed to $className but are not supported by the component", E_USER_WARNING);//TODO: verbose level
+                }
+            }
 
-        try {
-            $resolvedView = $this->resolvedView;
-            $rc = new \ReflectionClass($class);
-            $this->resolvedView = $rc->getFileName();
-            $node = $this->parse($html);
-        } finally {
-            $this->resolvedView = $resolvedView;
+            $html = strval($class);
+
+            try {
+                $resolvedView = $this->resolvedView;
+                $rc = new \ReflectionClass($class);
+                $this->resolvedView = $rc->getFileName();
+                $node = $this->parse($html);
+            } finally {
+                $this->resolvedView = $resolvedView;
+            }
+        } catch (\Throwable $throwable) {
+            $exception = new ProcessNodeException($throwable, realpath($this->resolvedView), $className ?? $node->tag->name(), is_null($node ?? null) ? null : $node->getLocation());
+            throw $exception;
         }
-    } catch (\Throwable $throwable) {
-        $exception = new ProcessNodeException($throwable, realpath($this->resolvedView), $className ?? $node->tag->name(), is_null($node ?? null) ? null : $node->getLocation());
-        throw $exception;
-    }
 
         return $node->root;
     }
@@ -154,7 +158,8 @@ class View {
      *
      * @return string
      */
-    public function render() {
+    public function render()
+    {
         return $this->viewCache = $this->viewCache ?? $this->parse($this->viewContent)->outerHtml;
     }
 
@@ -163,7 +168,8 @@ class View {
      *
      * @return string
      */
-    public function forceRender() {
+    public function forceRender()
+    {
         $this->viewCache = null;
         return $this->render();
     }
@@ -175,7 +181,8 @@ class View {
      *
      * @return string
      */
-    public function requireToVar($file) {
+    public function requireToVar($file)
+    {
         ob_start();
         require($file);
         return (string) ob_get_clean();

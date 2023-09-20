@@ -5,29 +5,35 @@ namespace Tests;
 use Genius257\View\View;
 use PHPUnit\Framework\TestCase;
 
-class ViewTest extends TestCase {
-    public function createView() {
-        return new View(__DIR__.'/testData/view.php');
+class ViewTest extends TestCase
+{
+    public function createView()
+    {
+        return new View(__DIR__ . '/testData/view.php');
     }
 
     /*
-    public function testFromFileWithAbsolutePath() {
+    public function testFromFileWithAbsolutePath()
+    {
         View::fromFile(__DIR__.'/view/basic.php');
     }
 
-    public function testFromFileWithRelativePath() {
+    public function testFromFileWithRelativePath()
+    {
         View::fromFile('../view/basic.php');
     }
     */
 
-    public function testParse() {
+    public function testParse()
+    {
         $view = $this->createView();
         $dom = $view->parse('<a href="link.to/somewhere"><Tests\testData\Component>link text</Tests\testData\Component></a>');
 
         $this->assertEquals('<a href="link.to/somewhere"><component></component></a>', $dom->__toString());
     }
 
-    public function testRender() {
+    public function testRender()
+    {
         $view = $this->createView();
         $this->assertEquals("<!DOCTYPE html>\n<html>\n    <head></head>\n    <body>\n        text <span>content</span>\n        <br />\n        <component></component>\n    </body>\n</html>\n", $view->render());
     }
@@ -39,7 +45,8 @@ class ViewTest extends TestCase {
      * on subsequent render calls, ignoring the viewContent
      * after first render.
      */
-    public function testRenderWithCache() {
+    public function testRenderWithCache()
+    {
         $view = $this->createView();
 
         $expected = $view->render();
@@ -52,9 +59,10 @@ class ViewTest extends TestCase {
         $this->assertEquals($expected, $view->render());
     }
 
-    public function testForceRender() {
+    public function testForceRender()
+    {
         $view = $this->createView();
-        
+
         $expected = $view->forceRender();
 
         $this->assertEquals($expected, $view->render());
@@ -73,9 +81,10 @@ class ViewTest extends TestCase {
         $this->assertEquals('123', $view->render());
     }
 
-    public function testRequireToVar() {
+    public function testRequireToVar()
+    {
         $view = $this->createView();
-        $data = $view->requireToVar(__DIR__.'/testData/view.php');
+        $data = $view->requireToVar(__DIR__ . '/testData/view.php');
         $this->assertEquals("<!DOCTYPE html>\n<html>\n    <head></head>\n    <body>\n        text <span>content</span>\n        <br />\n        <Tests\\testData\\Component data-extra=\"value\" />\n    </body>\n</html>\n", $data);
     }
 }

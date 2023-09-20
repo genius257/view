@@ -8,20 +8,27 @@ use Genius257\View\Dom\Node\HtmlNode;
 use Genius257\View\Dom\Node\RootNode;
 use PHPUnit\Framework\TestCase;
 
-class ComponentTest extends TestCase {
-    public function createComponent() {
-        return new class() extends Component {
+class ComponentTest extends TestCase
+{
+    public function createComponent()
+    {
+        return new class () extends Component
+        {
             protected $properties = [
                 'children' => [],
                 'style' => 'display:none;',
                 'src' => '/image.png',
             ];
 
-            public function _render() {return "xyz";}
+            public function _render()
+            {
+                return "xyz";
+            }
         };
     }
 
-    public function createComponentWithChildren() {
+    public function createComponentWithChildren()
+    {
         $component = $this->createComponent();
 
         $nodeA = new HtmlNode("a");
@@ -43,15 +50,18 @@ class ComponentTest extends TestCase {
         return $component;
     }
 
-    public function testTrim() {
-        $component = new class() extends Component {
+    public function testTrim()
+    {
+        $component = new class () extends Component {
             protected $trim = false;
 
-            public function setTrim(bool $trim): bool {
+            public function setTrim(bool $trim): bool
+            {
                 return $this->trim = $trim;
             }
 
-            public function _render() {
+            public function _render()
+            {
                 return "  a  b  c  \t\n";
             }
         };
@@ -63,34 +73,38 @@ class ComponentTest extends TestCase {
         $this->assertEquals("a  b  c", $component->render());
     }
 
-    public function testMake() {
+    public function testMake()
+    {
         $component = $this->createComponent();
 
         $this->assertInstanceOf(get_class($component), $component::make());
-        
+
         $this->expectError();
         $this->expectErrorMessage("Cannot instantiate abstract class Genius257\View\Component");
 
         Component::make();
     }
 
-    public function testGetProperties() {
+    public function testGetProperties()
+    {
         $component = $this->createComponent();
 
         $this->assertEquals(['style' => 'display:none;', 'src' => '/image.png', 'children' => []], $component->getProperties());
     }
 
-    public function testGetProperty() {
+    public function testGetProperty()
+    {
         $component = $this->createComponent();
 
         $this->assertEquals('display:none;', $component->getProperty('style'));
         $this->assertEquals('/image.png', $component->getProperty('src'));
-        
+
         // missing properties, should by default return null
         $this->assertEquals(null, $component->getProperty('missing'));
     }
 
-    public function testHasProperty() {
+    public function testHasProperty()
+    {
         $component = $this->createComponent();
 
         $this->assertTrue($component->hasProperty('style'));
@@ -103,7 +117,8 @@ class ComponentTest extends TestCase {
      * and RootNode instances are excluded, but RootNode children gets extracted.
      * @return void
      */
-    public function testGetHTMLNodeChildren() {
+    public function testGetHTMLNodeChildren()
+    {
         $component = $this->createComponent();
 
         $nodeA = new HtmlNode("a");
@@ -128,30 +143,38 @@ class ComponentTest extends TestCase {
         $this->assertEquals([$nodeA, $nodeB, $nodeD, $nodeE], $children);
     }
 
-    public function testRenderChildren() {
+    public function testRenderChildren()
+    {
         $component = $this->createComponentWithChildren();
 
         $this->assertEquals("<a></a><b></b>test<c><d></d><e></e></c>", $component->renderChildren());
     }
 
-    public function testRender() {
+    public function testRender()
+    {
         $component = $this->createComponentWithChildren();
 
         $this->assertEquals("xyz", $component->render());
     }
 
-    public function testRenderWarningWithTwoOutputSources() {
+    public function testRenderWarningWithTwoOutputSources()
+    {
         $this->expectException(ErrorException::class);
         $this->expectExceptionMessageMatches('/^component .*::_render produced content to the output buffer AND returned a non null value$/');
 
         $component = new class extends Component {
-            public function _render() {echo "xyz";return "xyz";}
+            public function _render()
+            {
+                echo "xyz";
+                return "xyz";
+            }
         };
 
         $component->render();
     }
 
-    public function testMagicSetterMethods() {
+    public function testMagicSetterMethods()
+    {
         $component = $this->createComponent();
 
         $setterReturn = $component->setChildren(["child"]);
@@ -163,7 +186,8 @@ class ComponentTest extends TestCase {
         $this->assertEquals(["child"], $component->getProperty('children'));
     }
 
-    public function testGuardsMagicSetterMethods() {
+    public function testGuardsMagicSetterMethods()
+    {
         $component = $this->createComponent();
 
         $component->setSrc("test");
@@ -174,9 +198,10 @@ class ComponentTest extends TestCase {
         $component->setMissing();
     }
 
-    public function testGuardMagicCallUndefinedMethod() {
+    public function testGuardMagicCallUndefinedMethod()
+    {
         $component = $this->createComponent();
-        
+
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Call to undefined method "missing"');
 

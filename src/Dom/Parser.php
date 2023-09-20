@@ -100,7 +100,8 @@ class Parser extends PHPHtmlParserParser
                 if (!$node->getTag()->isSelfClosing()) {
                     $activeNode = $node;
                 }
-            } elseif ($options->isWhitespaceTextNode() ||
+            } elseif (
+                $options->isWhitespaceTextNode() ||
                 \trim($str) != ''
             ) {
                 // we found text we care about
@@ -146,7 +147,7 @@ class Parser extends PHPHtmlParserParser
                 ->setOpening('<?')
                 ->setClosing(' ?>')
                 ->selfClosing();
-        } elseif($content->string(3) == '!--') {
+        } elseif ($content->string(3) == '!--') {
             // comment tag
             $tag = $content->fastForward(3)
                 ->copyByToken(StringToken::CLOSECOMMENT(), false);
