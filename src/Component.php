@@ -16,7 +16,7 @@ abstract class Component
      *
      * @var boolean
      */
-    protected $trim = true;
+    public $trim = true;
 
     final public function __construct()
     {
