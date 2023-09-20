@@ -275,7 +275,9 @@ class Parser extends PHPHtmlParserParser
                 if ($options->isStrict()) {
                     // can't have this in strict html
                     $character = $content->getPosition();
-                    throw new StrictException("Tag '$tag' has an attribute '$name' without a value! (character #$character)");
+                    throw new StrictException(
+                        "Tag '$tag' has an attribute '$name' without a value! (character #$character)"
+                    );
                 }
                 $node->getTag()->setAttribute($name, null);
                 if ($content->char() != '>') {
