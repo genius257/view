@@ -1,56 +1,27 @@
 <?xml version="1.0"?>
-<ruleset name="Custom Standard">
- <description>A custom coding standard</description>
- <file>src/</file>
- <file>tests/</file>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="View">
+    <description>The coding standard for the View project.</description>
 
- <exclude-pattern type="relative">^/tests/*</exclude-pattern>
- <exclude-pattern type="relative">^/data/*</exclude-pattern>
+    <!-- Set the target folder to analyze -->
+    <file>src</file>
+    <file>tests</file>
 
- <arg value="s"/>
+    <!-- Choose the coding standard -->
+    <arg name="standard" value="PSR12"/>
+    <rule ref="PSR12"/>
 
- <rule ref="PSR2">
-   <exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
- </rule>
- <rule ref="Squiz">
-   <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing" />
-   <exclude name="Squiz.Commenting.FileComment.Missing" />
-   <exclude name="Squiz.Files.FileExtension.ClassFound" />
-   <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose" />
-   <exclude name="Squiz.Classes.ClassDeclaration.OpenBraceNewLine" />
-   <exclude name="Squiz.WhiteSpace.MemberVarSpacing.FirstIncorrect" />
-   <exclude name="Squiz.NamingConventions.ValidVariableName" />
- </rule>
- <rule ref="Squiz.Commenting.FunctionComment.Missing">
-   <exclude-pattern>*/tests/*</exclude-pattern>
- </rule>
- <rule ref="Squiz.Commenting.FunctionComment.MissingReturn">
-   <exclude-pattern>*/tests/*</exclude-pattern>
- </rule>
- <rule ref="Squiz.WhiteSpace.FunctionSpacing">
-   <properties>
-      <property name="spacing" value="1" />
-      <property name="spacingBeforeFirst" value="0" />
-      <property name="spacingAfterLast" value="0" />
-   </properties>
-</rule>
-<rule ref="Generic.Commenting.Fixme"/>
+    <!-- Specify the paths to exclude (if any) -->
+    <exclude-pattern>/src/excluded-folder/</exclude-pattern>
 
-<!--
-    Array values are specified by using "element" tags
-    with "key" and "value" attributes.
-
-    NOTE: This syntax is is only supported in PHP_CodeSniffer
-    versions 3.3.0 and greater.
- -->
- <rule ref="Generic.PHP.ForbiddenFunctions">
-  <properties>
-   <property name="forbiddenFunctions" type="array" extend="true">
-    <element key="delete" value="unset"/>
-    <element key="print" value="echo"/>
-    <element key="create_function" value="null"/>
-    <element key="sizeof" value="count"/>
-   </property>
-  </properties>
- </rule>
+    <!-- You can add additional rules and settings here if needed -->
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array" extend="true">
+                <element key="delete" value="unset"/>
+                <element key="print" value="echo"/>
+                <element key="create_function" value="null"/>
+                <element key="sizeof" value="count"/>
+            </property>
+        </properties>
+    </rule>
 </ruleset>
