@@ -7,6 +7,8 @@ use PHPHtmlParser\Dom;
 use Genius257\View\Dom\Node\HtmlNode;
 use PHPHtmlParser\Options;
 use Genius257\View\Dom\Parser;
+use Exception;
+use Stringable;
 
 class View
 {
@@ -182,5 +184,34 @@ class View
         ob_start();
         require($file);
         return (string) ob_get_clean();
+    }
+
+    /**
+     * Renders the component and returns the resulting content.
+     */
+    public static function renderComponent(Component $component): string
+    {
+        ob_start();
+
+        $returnContent = $component->render();
+        $objectBufferContent = ob_get_contents();
+
+        if ($objectBufferContent === false) {
+            throw new Exception("ob_get_contents() failed in Component::_render");
+        }
+
+        ob_end_clean();
+
+        if ($returnContent === null) {
+            $returnContent = "";
+        } elseif ($returnContent instanceof Stringable) {
+            $returnContent = $returnContent->__toString();
+        }
+
+        if ($component->trim) {
+            $returnContent = trim($returnContent);
+            $objectBufferContent = trim($objectBufferContent);
+        }
+        return $objectBufferContent . $returnContent;
     }
 }
