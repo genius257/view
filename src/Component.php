@@ -18,16 +18,6 @@ abstract class Component
      */
     protected $trim = true;
 
-    /**
-     * The supported attributes on the component.
-     *
-     * All keys in this list will have a setter method available
-     * named set followed by the property name with first letter uppercase.
-     *
-     * @var array<string, mixed>
-     */
-    protected $properties = ['children' => null];
-
     final public function __construct()
     {
     }
