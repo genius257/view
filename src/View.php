@@ -42,12 +42,18 @@ class View
     /**
      * Initialize a new View class instance.
      *
-     * @param string $view view file path
+     * @param string $viewFilePath view file path
      */
-    public function __construct(string $view)
+    public function __construct(string $viewFilePath)
     {
-        $this->view = $view;
-        $this->resolvedView = stream_resolve_include_path($this->view) ? $this->view : $this->view . '.php';
+        $resolvedView = stream_resolve_include_path($viewFilePath);
+
+        if ($resolvedView === false) {
+            throw new Exception("View file not found: {$viewFilePath}");
+        }
+
+        $this->view = $viewFilePath;
+        $this->resolvedView = $resolvedView;
         $this->viewContent = $this->requireToVar($this->resolvedView);
     }
 
