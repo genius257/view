@@ -11,7 +11,7 @@ class Component extends ViewComponent
         'data-extra' => null,
     ];
 
-    protected function _render()
+    public function render()
     {
         return "<component></component>";
     }
