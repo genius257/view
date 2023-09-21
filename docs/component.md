@@ -2,33 +2,28 @@
 
 ## Usage
 
-To use components, simply create a new class that extends from `Genius257\View\Component` and implement the `_render` method.
+To use components, simply create a new class that extends from `Genius257\View\Component` and implement the `render` method.
 
 ### Attributes
 
-Attributes for a view component are set via the protected property `$properties`.
+Attributes for a view component are set via public properties.
 
-It contains an associative array with the key being the attribute name and the value being the default value.
-
-Components inherit attributes from parents, even when the `$properties` class property value is changed on the child class definition.
-
-All components have a reserved property key named `"children"`. It contains an array of nested elements within the component html tag.
+All components have a reserved property named `"trim"`. It is a boolean value, indicating if the render post process should trim the output.
 
 ### Render
 
-The component render output is given via the `_render` method.
+The component render output is given via the `render` method.
 
-The method can return one of:
-* a string
-* Nothing but write directly to PHP output, for example via the echo function.
+The method can give output via:
+* A return statement.
+* Writing to the output buffer, for example via the echo function.
 
-But NOT both.
+If both a return and content in the output buffer is given, the final render will be the a concatinated string, with output buffer first, return output second.
 
 #### Stringable
-casting this class to string, will result in the same as a `render` method call on the component
+casting this class to string, will result in the same as making the View class render the component.
 
 #### Nested render
-
 The component MAY return or output html with another component tag.
 
 That component tag will also be processed in the same view render call, until all component tags are processed.
@@ -37,7 +32,7 @@ That component tag will also be processed in the same view render call, until al
 
 Component tags are html elements, where the HTML tag are the entire class reference string (Full namespace included)
 
-Component tags MAY have children, if supported by the component referenced.
+Component tags MAY have children, if they extend from the ComponentWithChildren class.
 
 example:
 
