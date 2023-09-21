@@ -59,8 +59,7 @@ abstract class ComponentWithChildren extends Component
     public function getHTMLNodeChildren()
     {
         $HTMLNodes = [];
-        $children  = $this->properties['children'] ?? [];
-        foreach ($children as $child) {
+        foreach ($this->children as $child) {
             if ($child instanceof RootNode) {
                 foreach ($child->getChildren() as $child) {
                     if ($child instanceof HtmlNode) {
