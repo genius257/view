@@ -94,11 +94,13 @@ class Parser extends PHPHtmlParserParser
 
                 /** @var \PHPHtmlParser\Dom\Node\HtmlNode|null $node */
                 $node = $tagDTO->getNode();
-                $activeNode->addChild($node);
+                if ($node !== null) {
+                    $activeNode->addChild($node);
 
-                // check if node is self closing
-                if (!$node->getTag()->isSelfClosing()) {
-                    $activeNode = $node;
+                    // check if node is self closing
+                    if (!$node->getTag()->isSelfClosing()) {
+                        $activeNode = $node;
+                    }
                 }
             } elseif (
                 $options->isWhitespaceTextNode() ||
