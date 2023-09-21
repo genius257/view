@@ -182,7 +182,9 @@ class Parser extends PHPHtmlParserParser
             // Should be a self closing tag, check if we are strict
             if ($options->isStrict()) {
                 $character = $content->getPosition();
-                throw new StrictException("Tag '" . $node->getTag()->name() . "' is not self closing! (character #$character)");
+                throw new StrictException(
+                    "Tag '" . $node->getTag()->name() . "' is not self closing! (character #$character)"
+                );
             }
 
             // We force self closing on this tag.
