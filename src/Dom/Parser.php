@@ -213,8 +213,6 @@ class Parser extends PHPHtmlParserParser
      * @param HtmlNode $node
      * @param Options $options
      * @param string|Tag $tag
-     *
-     * @return void
      */
     private function setUpAttributes(Content $content, int $size, HtmlNode $node, Options $options, $tag): void
     {
