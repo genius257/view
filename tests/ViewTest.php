@@ -27,7 +27,9 @@ class ViewTest extends TestCase
     public function testParse()
     {
         $view = $this->createView();
-        $dom = $view->parse('<a href="link.to/somewhere"><Tests\testData\Component>link text</Tests\testData\Component></a>');
+        $dom = $view->parse(
+            '<a href="link.to/somewhere"><Tests\testData\Component>link text</Tests\testData\Component></a>'
+        );
 
         $this->assertEquals('<a href="link.to/somewhere"><component></component></a>', $dom->__toString());
     }
@@ -35,7 +37,10 @@ class ViewTest extends TestCase
     public function testRender()
     {
         $view = $this->createView();
-        $this->assertEquals("<!DOCTYPE html>\n<html>\n    <head></head>\n    <body>\n        text <span>content</span>\n        <br />\n        <component></component>\n    </body>\n</html>\n", $view->render());
+        $this->assertEquals(
+            "<!DOCTYPE html>\n<html>\n    <head></head>\n    <body>\n        text <span>content</span>\n        <br />\n        <component></component>\n    </body>\n</html>\n",
+            $view->render()
+        );
     }
 
     /**
@@ -85,6 +90,9 @@ class ViewTest extends TestCase
     {
         $view = $this->createView();
         $data = $view->requireToVar(__DIR__ . '/testData/view.php');
-        $this->assertEquals("<!DOCTYPE html>\n<html>\n    <head></head>\n    <body>\n        text <span>content</span>\n        <br />\n        <Tests\\testData\\Component data-extra=\"value\" />\n    </body>\n</html>\n", $data);
+        $this->assertEquals(
+            "<!DOCTYPE html>\n<html>\n    <head></head>\n    <body>\n        text <span>content</span>\n        <br />\n        <Tests\\testData\\Component data-extra=\"value\" />\n    </body>\n</html>\n",
+            $data
+        );
     }
 }

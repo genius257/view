@@ -83,7 +83,10 @@ class ComponentTest extends TestCase
     {
         $component = $this->createComponent();
 
-        $this->assertEquals(['style' => 'display:none;', 'src' => '/image.png', 'children' => []], $component->getProperties());
+        $this->assertEquals(
+            ['style' => 'display:none;', 'src' => '/image.png', 'children' => []],
+            $component->getProperties()
+        );
     }
 
     public function testGetProperty()
@@ -143,7 +146,9 @@ class ComponentTest extends TestCase
     {
         $this->markTestSkipped('TODO: implement');
         $this->expectException(ErrorException::class);
-        $this->expectExceptionMessageMatches('/^component .*::render produced content to the output buffer AND returned a non null value$/');
+        $this->expectExceptionMessageMatches(
+            '/^component .*::render produced content to the output buffer AND returned a non null value$/'
+        );
 
         $component = new class extends Component {
             public function render()

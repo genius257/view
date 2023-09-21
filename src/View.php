@@ -123,7 +123,12 @@ class View
                     return $node;
                 }
             } catch (\Throwable $throwable) {
-                $exception = new ProcessNodeException($throwable, realpath($this->resolvedView), $className ?? $node->tag->name(), is_null($node ?? null) ? null : $node->getLocation());
+                $exception = new ProcessNodeException(
+                    $throwable,
+                    realpath($this->resolvedView),
+                    $className ?? $node->tag->name(),
+                    is_null($node ?? null) ? null : $node->getLocation()
+                );
                 throw $exception;
             }
 
