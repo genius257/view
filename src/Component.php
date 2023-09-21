@@ -35,7 +35,16 @@ abstract class Component
      */
     public function getProperties()
     {
-        return $this->properties;
+        $reflectionClass = new \ReflectionClass($this);
+        $properties = $reflectionClass->getProperties(\ReflectionProperty::IS_PUBLIC);
+
+        $result = [];
+
+        foreach ($properties as $property) {
+            $result[$property->getName()] = $property->getValue($this);
+        }
+
+        return $result;
     }
 
     /**
