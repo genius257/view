@@ -55,12 +55,6 @@ abstract class Component
 
     public function __toString(): string
     {
-        $rendered = View::renderComponent($this);
-
-        if ($rendered instanceof Stringable) {
-            return $rendered->__toString();
-        }
-
-        return $rendered;
+        return View::renderComponent($this);
     }
 }
