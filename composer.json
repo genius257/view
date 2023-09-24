@@ -17,7 +17,7 @@
         "paquettg/php-html-parser": "~3.1.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^9.0",
         "phpstan/phpstan": "^1.9",
         "squizlabs/php_codesniffer": "^3.7"
     },
