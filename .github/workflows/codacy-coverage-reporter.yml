@@ -11,14 +11,14 @@ jobs:
       - name: Composer (php-actions)
         uses: php-actions/composer@v6
         with:
-          php_version: "7.2"
+          php_version: "7.4"
           version: 2.x
       - name: PHPUnit (php-actions)
         uses: php-actions/phpunit@v3
         with:
           configuration: phpunit.xml
-          version: "8.5"
-          php_version: "7.2"
+          version: "9.6"
+          php_version: "7.4"
           php_extensions: "xdebug mbstring"
           args: --coverage-clover phpunit-clover.xml
         env:
