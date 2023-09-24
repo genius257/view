@@ -13,7 +13,7 @@ abstract class ComponentWithChildren extends Component
     /**
      * @param HtmlNode|Component|Stringable|string $child
      */
-    public function childToString($child): string
+    public static function childToString($child): string
     {
         if ($child instanceof Stringable) {
             return $child->__toString();
