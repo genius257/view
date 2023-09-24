@@ -31,5 +31,9 @@
             "App\\": "example/app/",
             "Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "phpunit-coverage": "XDEBUG_MODE=coverage phpunit --coverage-text",
+        "phpunit-coverage-html": "XDEBUG_MODE=coverage phpunit --coverage-html=coverage"
     }
 }
