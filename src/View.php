@@ -203,11 +203,17 @@ class View
     {
         ob_start();
 
+        $level = ob_get_level();
+
         $returnContent = $component->render();
         $objectBufferContent = ob_get_contents();
 
         if ($objectBufferContent === false) {
             throw new Exception("ob_get_contents() failed in Component::_render");
+        }
+
+        if ($level <> ob_get_level()) {
+            throw new Exception("output buffer nesting level mismatch. Expected: " . $level . ", got: " . ob_get_level());
         }
 
         ob_end_clean();
