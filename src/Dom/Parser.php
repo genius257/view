@@ -94,11 +94,13 @@ class Parser extends PHPHtmlParserParser
 
                 /** @var \PHPHtmlParser\Dom\Node\HtmlNode|null $node */
                 $node = $tagDTO->getNode();
-                $activeNode->addChild($node);
+                if ($node !== null) {
+                    $activeNode->addChild($node);
 
-                // check if node is self closing
-                if (!$node->getTag()->isSelfClosing()) {
-                    $activeNode = $node;
+                    // check if node is self closing
+                    if (!$node->getTag()->isSelfClosing()) {
+                        $activeNode = $node;
+                    }
                 }
             } elseif (
                 $options->isWhitespaceTextNode() ||
@@ -182,7 +184,9 @@ class Parser extends PHPHtmlParserParser
             // Should be a self closing tag, check if we are strict
             if ($options->isStrict()) {
                 $character = $content->getPosition();
-                throw new StrictException("Tag '" . $node->getTag()->name() . "' is not self closing! (character #$character)");
+                throw new StrictException(
+                    "Tag '" . $node->getTag()->name() . "' is not self closing! (character #$character)"
+                );
             }
 
             // We force self closing on this tag.
@@ -211,8 +215,6 @@ class Parser extends PHPHtmlParserParser
      * @param HtmlNode $node
      * @param Options $options
      * @param string|Tag $tag
-     *
-     * @return void
      */
     private function setUpAttributes(Content $content, int $size, HtmlNode $node, Options $options, $tag): void
     {
@@ -275,7 +277,9 @@ class Parser extends PHPHtmlParserParser
                 if ($options->isStrict()) {
                     // can't have this in strict html
                     $character = $content->getPosition();
-                    throw new StrictException("Tag '$tag' has an attribute '$name' with out a value! (character #$character)");
+                    throw new StrictException(
+                        "Tag '$tag' has an attribute '$name' without a value! (character #$character)"
+                    );
                 }
                 $node->getTag()->setAttribute($name, null);
                 if ($content->char() != '>') {

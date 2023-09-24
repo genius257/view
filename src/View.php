@@ -7,6 +7,7 @@ use PHPHtmlParser\Dom;
 use Genius257\View\Dom\Node\HtmlNode;
 use PHPHtmlParser\Options;
 use Genius257\View\Dom\Parser;
+use Exception;
 
 class View
 {
@@ -41,12 +42,18 @@ class View
     /**
      * Initialize a new View class instance.
      *
-     * @param string $view view file path
+     * @param string $viewFilePath view file path
      */
-    public function __construct(string $view)
+    public function __construct(string $viewFilePath)
     {
-        $this->view = $view;
-        $this->resolvedView = stream_resolve_include_path($this->view) ? $this->view : $this->view . '.php';
+        $resolvedView = stream_resolve_include_path($viewFilePath);
+
+        if ($resolvedView === false) {
+            throw new Exception("View file not found: {$viewFilePath}");
+        }
+
+        $this->view = $viewFilePath;
+        $this->resolvedView = $resolvedView;
         $this->viewContent = $this->requireToVar($this->resolvedView);
     }
 
@@ -116,23 +123,19 @@ class View
                     return $node;
                 }
             } catch (\Throwable $throwable) {
-                $exception = new ProcessNodeException($throwable, realpath($this->resolvedView), $className ?? $node->tag->name(), is_null($node ?? null) ? null : $node->getLocation());
+                $exception = new ProcessNodeException(
+                    $throwable,
+                    realpath($this->resolvedView),
+                    $className ?? $node->tag->name(),
+                    is_null($node ?? null) ? null : $node->getLocation()
+                );
                 throw $exception;
             }
 
             $class = new $className();
 
             foreach ($node->getAttributes() as $attributeKey => $attributeValue) {
-                $setter = "set" . ucfirst($attributeKey);
-                $class->$setter($attributeValue);
-            }
-
-            if (count($node->getChildren()) > 0) {
-                if ($class->hasProperty('children') || method_exists($class, 'setChildren')) {
-                    $class->setChildren($node->getChildren());
-                } else {
-                    trigger_error("children are passed to $className but are not supported by the component", E_USER_WARNING);//TODO: verbose level
-                }
+                $class->{$attributeKey} = $attributeValue;
             }
 
             $html = strval($class);
@@ -146,7 +149,12 @@ class View
                 $this->resolvedView = $resolvedView;
             }
         } catch (\Throwable $throwable) {
-            $exception = new ProcessNodeException($throwable, realpath($this->resolvedView), $className ?? $node->tag->name(), is_null($node ?? null) ? null : $node->getLocation());
+            $exception = new ProcessNodeException(
+                $throwable,
+                realpath($this->resolvedView),
+                $className ?? $node->tag->name(),
+                is_null($node ?? null) ? null : $node->getLocation()
+            );
             throw $exception;
         }
 
@@ -186,5 +194,40 @@ class View
         ob_start();
         require($file);
         return (string) ob_get_clean();
+    }
+
+    /**
+     * Renders the component and returns the resulting content.
+     */
+    public static function renderComponent(Component $component): string
+    {
+        ob_start();
+
+        $level = ob_get_level();
+
+        $returnContent = $component->render();
+        $objectBufferContent = ob_get_contents();
+
+        if ($objectBufferContent === false) {
+            throw new Exception("ob_get_contents() failed in Component::_render");
+        }
+
+        if ($level <> ob_get_level()) {
+            throw new Exception("output buffer nesting level mismatch. Expected: " . $level . ", got: " . ob_get_level());
+        }
+
+        ob_end_clean();
+
+        if ($returnContent === null) {
+            $returnContent = "";
+        } elseif ($returnContent instanceof Stringable) {
+            $returnContent = $returnContent->__toString();
+        }
+
+        if ($component->trim) {
+            $returnContent = trim($returnContent);
+            $objectBufferContent = trim($objectBufferContent);
+        }
+        return $objectBufferContent . $returnContent;
     }
 }
