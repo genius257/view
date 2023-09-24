@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
 
 class ProcessNodeExceptionTest extends TestCase
 {
+    /**
+     * @covers \Genius257\View\ProcessNodeException
+     */
     public function testTraceWithLocation()
     {
         $exception = new \Exception();
@@ -24,6 +27,9 @@ class ProcessNodeExceptionTest extends TestCase
         $this->assertEquals($expected, $processNodeException->getTrace());
     }
 
+    /**
+     * @covers \Genius257\View\ProcessNodeException
+     */
     public function testTraceWithoutLocation()
     {
         $exception = new \Exception();

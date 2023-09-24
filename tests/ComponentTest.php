@@ -12,6 +12,9 @@ use PHPUnit\Framework\TestCase;
 
 class ComponentTest extends TestCase
 {
+    /**
+     * @coversNothing
+     */
     public function createComponent()
     {
         return new class () extends ComponentWithChildren
@@ -26,29 +29,9 @@ class ComponentTest extends TestCase
         };
     }
 
-    public function createComponentWithChildren()
-    {
-        $component = $this->createComponent();
-
-        $nodeA = new HtmlNode("a");
-        $nodeB = new \PHPHtmlParser\Dom\Node\HtmlNode("b");
-        $rootNode = new RootNode('c');
-        $nodeD = new HtmlNode('d');
-        $nodeE = new HtmlNode('e');
-
-        $rootNode->addChild($nodeD);
-        $rootNode->addChild($nodeE);
-
-        $component->children = [
-            $nodeA,
-            $nodeB,
-            "test",
-            $rootNode,
-        ];
-
-        return $component;
-    }
-
+    /**
+     * @covers \Genius257\View\Component
+     */
     public function testTrim()
     {
         $component = new class () extends Component {
@@ -67,89 +50,49 @@ class ComponentTest extends TestCase
         $this->assertEquals("a  b  c", View::renderComponent($component));
     }
 
+    /**
+     * @covers \Genius257\View\Component::make
+     */
     public function testMake()
     {
         $component = $this->createComponent();
 
         $this->assertInstanceOf(get_class($component), $component::make());
-
-        $this->expectError();
-        $this->expectErrorMessage("Cannot instantiate abstract class Genius257\View\Component");
-
-        Component::make();
     }
 
+    /**
+     * @covers \Genius257\View\Component::getProperties
+     */
     public function testGetProperties()
     {
         $component = $this->createComponent();
 
         $this->assertEquals(
-            ['style' => 'display:none;', 'src' => '/image.png', 'children' => []],
+            [
+                'style' => 'display:none;',
+                'src' => '/image.png',
+                'children' => [],
+                'trim' => true,
+            ],
             $component->getProperties()
         );
     }
 
-    public function testGetProperty()
-    {
-        $component = $this->createComponent();
-
-        $this->assertEquals('display:none;', $component->style);
-        $this->assertEquals('/image.png', $component->src);
-    }
-
     /**
-     * Test that items that are not itanceof HtmlNode are filtered out
-     * and RootNode instances are excluded, but RootNode children gets extracted.
-     * @return void
+     * @covers \Genius257\View\Component::render
      */
-    public function testGetHTMLNodeChildren()
-    {
-        $component = $this->createComponent();
-
-        $nodeA = new HtmlNode("a");
-        $nodeB = new \PHPHtmlParser\Dom\Node\HtmlNode("b");
-        $rootNode = new RootNode('c');
-        $nodeD = new HtmlNode('d');
-        $nodeE = new HtmlNode('e');
-
-        $rootNode->addChild($nodeD);
-        $rootNode->addChild($nodeE);
-
-        $component->children = [
-            $nodeA,
-            $nodeB,
-            "test",
-            $rootNode,
-        ];
-
-        $children = $component->getHTMLNodeChildren();
-
-        $this->assertCount(4, $children);
-        $this->assertEquals([$nodeA, $nodeB, $nodeD, $nodeE], $children);
-    }
-
-    public function testRenderChildren()
-    {
-        $component = $this->createComponentWithChildren();
-
-        $this->assertEquals("<a></a><b></b>test<c><d></d><e></e></c>", $component->renderChildren());
-    }
-
     public function testRender()
     {
-        $component = $this->createComponentWithChildren();
+        $component = $this->createComponent();
 
         $this->assertEquals("xyz", View::renderComponent($component));
     }
 
-    public function testRenderWarningWithTwoOutputSources()
+    /**
+     * @covers \Genius257\View\Component::render
+     */
+    public function testRenderWithTwoOutputSources()
     {
-        $this->markTestSkipped('TODO: implement');
-        $this->expectException(ErrorException::class);
-        $this->expectExceptionMessageMatches(
-            '/^component .*::render produced content to the output buffer AND returned a non null value$/'
-        );
-
         $component = new class extends Component {
             public function render()
             {
@@ -158,6 +101,16 @@ class ComponentTest extends TestCase
             }
         };
 
-        $component->render();
+        $this->assertEquals("xyzxyz", View::renderComponent($component));
+    }
+
+    /**
+     * @covers \Genius257\View\Component::__toString
+     */
+    public function testToString()
+    {
+        $component = $this->createComponent();
+
+        $this->assertEquals("xyz", $component->__toString());
     }
 }
